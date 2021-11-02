@@ -32,9 +32,11 @@ class botoSession:
     def session(self, profile_name: str = "", region_name: str = ""):
         if self.profile_name != "":
             pass
-        elif profile_name:
+        elif profile_name != "":
             self.profile_name = profile_name
             self.region_name = region_name
+        else:
+            return boto3.Session()
 
         try:
             if self.region_name != '':
