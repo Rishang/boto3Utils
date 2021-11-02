@@ -4,7 +4,7 @@ import boto3
 import botocore.exceptions
 
 """
-For not careing about having aws profiles been managed while testing code locally
+For not caring about having aws profiles been managed while testing code locally
 and while sharing code to others or to aws resource eg: lambda, ec2, ecs
 """
 class botoSession:
