@@ -153,8 +153,8 @@ class TimeStreamWrite:
 
 
 """
-This class converts timestremewrite table into 
-a dict which can be visualised in pandas by dataframe of dict
+This class converts timestremewrite table into a dict
+which can be visualised in jupyter-notebook by pandas dataframe of that dict
 in order to see how data in going to write on aws timestreme db table
 before pushing it over there
 
