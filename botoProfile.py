@@ -23,8 +23,6 @@ class botoSession:
                 conf = json.loads(c.read())
             self.profile_name = conf.get("aws_profile_name") or ""
             self.region_name = conf.get("aws_region_name") or ""
-        else:
-            raise FileNotFoundError('config json file not.')
 
     """
     check for boto3 Session profile, if not present, set to default
