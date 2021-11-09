@@ -170,7 +170,6 @@ pd.DataFrame(t_see)
 
 
 class ViewDictTable:
-    
     def view_dimention(self, dimention):
         f = {}
         for dim in dimention:
