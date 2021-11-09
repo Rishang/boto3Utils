@@ -14,7 +14,6 @@ class botoSession:
         self.profile_name: str = ""
         self.region_name: str = ""
 
-
     def config(self, conf_path: str = ""):
         """
         search for aws profile configs in json file present at `conf_path`
@@ -26,12 +25,11 @@ class botoSession:
             self.profile_name = conf.get("aws_profile_name") or ""
             self.region_name = conf.get("aws_region_name") or ""
 
-
     def session(self, profile_name: str = "", region_name: str = ""):
         """
         check for boto3 Session profile, if not present, set to default
         """
-        
+
         if self.profile_name != "":
             pass
         elif profile_name != "":

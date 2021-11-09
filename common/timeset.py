@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from zoneinfo import ZoneInfo # requires python3.9
+from zoneinfo import ZoneInfo  # requires python3.9
 
 
 class TimeSet:
@@ -9,7 +9,7 @@ class TimeSet:
 
     utc = "UTC"
 
-    def str2date(self, string:str, dt_format:str, tz:str, as_tz=None):
+    def str2date(self, string: str, dt_format: str, tz: str, as_tz=None):
         """
         conevrts string based date to datetime base on defined datetime formate, and timezone
         """
@@ -24,7 +24,7 @@ class TimeSet:
             second=d.second,
             tzinfo=tzinfo,
         )
-        
+
         # if defined
         # conver given string date to different timezone
         if as_tz:

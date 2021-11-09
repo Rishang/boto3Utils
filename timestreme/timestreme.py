@@ -1,6 +1,7 @@
 import sys
 import traceback
 
+
 class TimeStreamRead:
     """
     query and read timestreme query and reautn in dictionary format
@@ -100,6 +101,7 @@ class TimeStreamRead:
                     rows.append(tmp)
 
         return rows
+
 
 class TimeStreamWrite:
     """
