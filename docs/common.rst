@@ -7,6 +7,6 @@ common snippets
 common
 -----
 
-.. automodule:: common
+.. automodule:: common.timeset
    :members:
    :undoc-members:
