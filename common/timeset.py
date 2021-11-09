@@ -9,7 +9,7 @@ class TimeSet:
 
     utc = "UTC"
 
-    def str2date(self, string, dt_format, tz, as_tz=None):
+    def str2date(self, string:str, dt_format:str, tz:str, as_tz=None):
         """
         conevrts string based date to datetime base on defined datetime formate, and timezone
         """
@@ -24,7 +24,9 @@ class TimeSet:
             second=d.second,
             tzinfo=tzinfo,
         )
-
+        
+        # if defined
+        # conver given string date to different timezone
         if as_tz:
             as_tz_z = ZoneInfo(as_tz)
             atz_date = self.tz_date.astimezone(as_tz_z)
