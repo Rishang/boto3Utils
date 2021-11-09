@@ -1,13 +1,11 @@
 import sys
 import traceback
 
-
-"""
-query and read timestreme query and reautn in dictionary format
-"""
-
-
 class TimeStreamRead:
+    """
+    query and read timestreme query and reautn in dictionary format
+    """
+
     def __init__(self, boto_session):
         self.sess = boto_session
         self.client = self.sess.client("timestream-query")
@@ -103,13 +101,11 @@ class TimeStreamRead:
 
         return rows
 
-
-"""
-TimeStream Write utils
-"""
-
-
 class TimeStreamWrite:
+    """
+    TimeStream Write utils
+    """
+
     def __init__(self, boto_session):
         self.sess = boto_session
         self.client = self.sess.client("timestream-write")
