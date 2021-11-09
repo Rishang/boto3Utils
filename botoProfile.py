@@ -15,7 +15,6 @@ class botoSession:
         self.region_name: str = ""
 
 
-
     def config(self, conf_path: str = ""):
         """
         search for aws profile configs in json file present at `conf_path`
