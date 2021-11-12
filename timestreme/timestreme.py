@@ -150,24 +150,25 @@ class TimeStreamWrite:
         return records
 
 
-"""
-This class converts timestremewrite table into a dict
-which can be visualised in jupyter-notebook by pandas dataframe of that dict
-in order to see how data in going to write on aws timestreme db table
-before pushing it over there
-
-import pandas as pd
-pd.set_option('display.max_rows', None)
-
-t = ViewDictTable()
-t_see = t.view_table(table_data)
-
-pd.DataFrame(t_see)
-
-"""
 
 
 class ViewDictTable:
+    """
+    This class converts timestremewrite table into a dict
+    which can be visualised in jupyter-notebook by pandas dataframe of that dict
+    in order to see how data in going to write on aws timestreme db table
+    before pushing it over there
+
+    import pandas as pd
+    pd.set_option('display.max_rows', None)
+
+    t = ViewDictTable()
+    t_see = t.view_table(table_data)
+
+    pd.DataFrame(t_see)
+
+    """
+    
     def view_dimention(self, dimention):
         f = {}
         for dim in dimention:
