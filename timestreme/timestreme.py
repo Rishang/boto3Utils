@@ -183,16 +183,16 @@ class ViewDictTable:
             _d = self.view_dimention(t_row["Dimensions"])
             _d["Time"] = t_row["Time"]
 
-            MeasureName = t_row.get("MeasureName")
-            MeasureValue = t_row.get("MeasureValue")
-            MeasureValueType = t_row.get("MeasureValueType")
+            measure_name = t_row.get("MeasureName")
+            measure_value = t_row.get("MeasureValue")
+            measure_value_type = t_row.get("MeasureValueType")
 
-            if MeasureName:
-                _d["MeasureName"] = MeasureName
-            if MeasureValue:
-                _d["MeasureValue"] = MeasureValue
-            if MeasureValueType:
-                _d["MeasureValueType"] = MeasureValueType
+            if measure_name:
+                _d["MeasureName"] = measure_name
+            if measure_value:
+                _d["MeasureValue"] = measure_value
+            if measure_value_type:
+                _d["MeasureValueType"] = measure_value_type
 
             _t.append(_d)
 
