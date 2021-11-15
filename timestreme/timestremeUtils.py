@@ -11,12 +11,12 @@ class TimeStreamRead:
         self.sess = boto_session
         self.client = self.sess.client("timestream-query")
 
-    def message(self, msg, debug):
+    def message(self, msg, debug:bool):
         if debug:
             print(msg)
         return
 
-    def run_query(self, query_string, max_items=10, debug: bool = True, filter: bool=False, **kwargs):
+    def run_query(self, query_string: str, max_items: int=10, debug: bool = True, filter: bool=False, **kwargs):
 
         try:
             paginator = self.client.get_paginator("query")
@@ -33,7 +33,8 @@ class TimeStreamRead:
                 self.message(page, debug=debug)
                 if filter == True:
                     row = self.read_rows(page, **kwargs)
-                    data.append(row)
+                    if len(row) != 0:
+                        data.append(row)
                 else:
                     data.append(page)
             return data
@@ -49,7 +50,7 @@ class TimeStreamRead:
                 f[key] = value
         return f
 
-    def read_rows(self, data, filter_column=[], to_dimention=False, nullarg=None):
+    def read_rows(self, data:dict, filter_column:list=[], to_dimention: bool=False, nullarg=None):
 
         rows = []
 
