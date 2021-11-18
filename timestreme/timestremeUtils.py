@@ -16,12 +16,12 @@ class TimeStreamRead:
             print(msg)
         return
 
-    def run_query(self, query_string: str, max_items: int=10, debug: bool = True, filter: bool=False, **kwargs):
+    def run_query(self, query:str, max_items:int=10, debug:bool=True, filter:bool=False, **kwargs):
 
         try:
             paginator = self.client.get_paginator("query")
             page_iterator = paginator.paginate(
-                QueryString=query_string,
+                QueryString=query,
                 PaginationConfig={
                     "MaxItems": max_items,
                     #    'PageSize': 1,
@@ -50,7 +50,7 @@ class TimeStreamRead:
                 f[key] = value
         return f
 
-    def read_rows(self, data:dict, filter_column:list=[], to_dimention: bool=False, nullarg=None):
+    def read_rows(self, data:dict, filter_column:list=[], to_dimention:bool=False, nullarg=None):
 
         rows = []
 
