@@ -11,12 +11,25 @@ class TimeStreamRead:
         self.sess = boto_session
         self.client = self.sess.client("timestream-query")
 
-    def message(self, msg, debug:bool):
+    def message(self, msg, debug: bool):
         if debug:
             print(msg)
         return
 
-    def run_query(self, query:str, max_items:int=10, debug:bool=True, filter:bool=False, **kwargs):
+    def _shrink(self, l: list):
+        if len(l) == 1 and isinstance(l, list):
+            if isinstance(l[0], list):
+                return self._shrink(l[0])
+        return l
+
+    def run_query(
+        self,
+        query: str,
+        max_items: int = 10,
+        debug: bool = True,
+        filter: bool = False,
+        **kwargs,
+    ) -> list:
 
         try:
             paginator = self.client.get_paginator("query")
@@ -27,8 +40,8 @@ class TimeStreamRead:
                     #    'PageSize': 1,
                 },
             )
-
             data: list = []
+
             for page in page_iterator:
                 self.message(page, debug=debug)
                 if filter == True:
@@ -37,11 +50,12 @@ class TimeStreamRead:
                         data.append(row)
                 else:
                     data.append(page)
-            return data
 
         except Exception as err:
             print("Exception while running query:", err)
             traceback.print_exc(file=sys.stderr)
+
+        return self._shrink(data)
 
     def _merge_dicts(self, l: list):
         f = {}
@@ -50,60 +64,47 @@ class TimeStreamRead:
                 f[key] = value
         return f
 
-    def read_rows(self, data:dict, filter_column:list=[], to_dimention:bool=False, nullarg=None):
+    def read_rows(
+        self,
+        data: dict,
+        to_dimention: bool = False,
+        nullarg=None,
+        add_cols=None,
+    ):
+        """
+        Reads raw data to timestreme table, and converts it
+        to dict or dimention
+        """
 
         rows = []
+        self.__is_dimention = to_dimention
 
+        # print(data["Rows"])
         for columns in data["Rows"]:
-            tmp = []
+            tmp = {}
             c_info = data["ColumnInfo"]
             c_data = columns["Data"]
 
-            if len(filter_column) != 0:
+            for c in range(len(c_data)):
+                if "NullValue" in c_data[c].keys():
+                    tmp[c_info[c]["Name"]] = nullarg
+                elif "ScalarValue" in c_data[c].keys():
+                    tmp[c_info[c]["Name"]] = c_data[c]["ScalarValue"]
 
-                for c in range(len(c_info)):
-                    column = c_info[c]["Name"]
-                    if column in filter_column:
-                        # print(f"{c_info[c]['Name']}, {c_data[c]['ScalarValue']}")
-                        if to_dimention == False:
-                            tmp.append({c_info[c]["Name"]: c_data[c]["ScalarValue"]})
-                        else:
-                            tmp.append(
-                                {
-                                    "Name": c_info[c]["Name"],
-                                    "Value": c_data[c]["ScalarValue"],
-                                }
-                            )
+            if add_cols != None and isinstance(add_cols, dict):
+                for col in add_cols:
+                    tmp[col] = add_cols[col]
 
-            else:
-                for c in range(len(c_data)):
-                    if "NullValue" in c_data[c].keys():
-                        if to_dimention == False:
-                            tmp.append({c_info[c]["Name"]: nullarg})
-                        else:
-                            tmp.append({"Name": c_info[c]["Name"], "Value": nullarg})
-                    elif "ScalarValue" in c_data[c].keys():
-                        if to_dimention == False:
-                            tmp.append({c_info[c]["Name"]: c_data[c]["ScalarValue"]})
-                        else:
-                            tmp.append(
-                                {
-                                    "Name": c_info[c]["Name"],
-                                    "Value": c_data[c]["ScalarValue"],
-                                }
-                            )
-
-            if to_dimention == False:
-                f = self._merge_dicts(tmp)
-                rows.append(f)
-            else:
+            if not to_dimention:
                 rows.append(tmp)
-        
+            else:
+                rows.append(self.to_dimention(tmp))
+
         return rows
 
-    def add_col(self, table, columns: dict):
+    def add_cols(self, table: list, columns: dict) -> list:
         """
-        add extra column to
+        Add extra column to records timestreme table
         """
 
         f = []
@@ -119,21 +120,28 @@ class TimeStreamRead:
         each row in timestreme database
         """
 
-        dim = []
-        for i in d:
-            dim.append({"Name": i, "Value": d[i]})
-        return dim
+        if not isinstance(d, dict):
+            print(d)
+            raise ValueError(f"Required datatype {type({})} got {type(d)}")
 
-    def to_table(self, rows, epoc_time):
+        return [{"Name": i, "Value": d[i]} for i in d]
+
+    def to_table(self, rows: list, epoc_time) -> list:
         """
         Table contains records or each dimention/rows
         """
 
-        records = []
+        records: list = []
         for row in rows:
+
+            if self.__is_dimention == False:
+                dim = self.to_dimention(row)
+            else:
+                dim = row
+
             record = {
                 "Time": epoc_time,
-                "Dimensions": self.to_dimention(row),
+                "Dimensions": dim,
                 "MeasureName": "Machine_Tag",
                 "MeasureValue": "Machine_Value",
                 "MeasureValueType": "VARCHAR",
