@@ -18,6 +18,14 @@ class botoSession:
         """
         search for aws profile configs in json file present at `conf_path`
         for boto3 sesstion to consider profile name defined in that json file
+
+        example config.json:
+
+            {
+                "aws_profile_name": "myprofile",
+                "aws_region_name": "us-east-1"
+            }
+
         """
         if os.path.exists(conf_path):
             with open(f"{conf_path}", "r") as c:
