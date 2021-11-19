@@ -155,7 +155,6 @@ class TimeStreamWrite:
     TimeStream Write utils
     """
 
-    record_chunk: bool = False
     response: list = []
 
     def __init__(self, boto_session):
@@ -171,7 +170,7 @@ class TimeStreamWrite:
 
         return new_list
 
-    def write_records(self, db_name, table_name, records, chunk_size=None):
+    def write_records(self, db_name, table_name, records, chunk_size=90):
         """
         writes given records rows
         to defined `table_name` of database `db_name`
@@ -191,7 +190,12 @@ class TimeStreamWrite:
             )
             return result
 
-        if self.record_chunk == True:
+        """
+        timestreme write record limit is of 100 record wirte
+        for list or records greater than 100, 
+        to write we have to create chunks
+        """
+        if len(records) > 100:
             nested_rec = self.nested_chunk(records, chunk_size)
             for rec in nested_rec:
                 resp = _write(rec)
